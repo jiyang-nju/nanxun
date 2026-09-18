@@ -1,0 +1,70 @@
+import type { Question, RoundResult } from './game';
+import { rankFor } from './game';
+export async function createScorecard(
+  results: RoundResult[],
+  questions: Question[],
+): Promise<string> {
+  await document.fonts.ready;
+  const canvas = document.createElement('canvas');
+  canvas.width = 1080;
+  canvas.height = 1440;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Canvas unavailable');
+  ctx.fillStyle = '#f4f2f7';
+  ctx.fillRect(0, 0, 1080, 1440);
+  ctx.fillStyle = '#673c83';
+  ctx.fillRect(0, 0, 1080, 22);
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#673c83';
+  ctx.font = 'bold 56px sans-serif';
+  ctx.fillText('南寻', 80, 118);
+  ctx.font = '22px sans-serif';
+  ctx.fillStyle = '#8e8796';
+  ctx.fillText('NANXUN · NJU GUESSR', 80, 162);
+  ctx.textAlign = 'right';
+  ctx.fillText('鼓楼漫游 / 成绩卡', 1000, 116);
+  const total = results.reduce((sum, r) => sum + r.score, 0);
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#47344f';
+  ctx.font = 'bold 52px sans-serif';
+  ctx.fillText(rankFor(total).title, 540, 292);
+  ctx.font = 'bold 130px sans-serif';
+  ctx.fillStyle = '#673c83';
+  ctx.fillText(total.toLocaleString('en-US'), 540, 466);
+  ctx.font = '26px sans-serif';
+  ctx.fillStyle = '#8e8796';
+  ctx.fillText('/ 25,000 分', 540, 524);
+  ctx.font = '28px sans-serif';
+  ctx.fillStyle = '#6c6572';
+  ctx.fillText(rankFor(total).description, 540, 604);
+  results.forEach((r, i) => {
+    const y = 711 + i * 98;
+    const q = questions.find((item) => item.id === r.questionId)!;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.roundRect(70, y - 42, 940, 78, 15);
+    ctx.fill();
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#9c91a4';
+    ctx.font = '23px sans-serif';
+    ctx.fillText(`0${i + 1}`, 100, y + 6);
+    ctx.fillStyle = '#433d4b';
+    ctx.font = '27px sans-serif';
+    ctx.fillText(q.name, 166, y + 6);
+    ctx.textAlign = 'right';
+    ctx.font = '22px sans-serif';
+    ctx.fillStyle = '#8c8492';
+    ctx.fillText(`约 ${Math.round(r.distance)} m`, 805, y + 6);
+    ctx.fillStyle = '#673c83';
+    ctx.font = 'bold 27px sans-serif';
+    ctx.fillText(String(r.score), 974, y + 6);
+  });
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#673c83';
+  ctx.font = '30px sans-serif';
+  ctx.fillText('你走过的南大，还认得吗？', 540, 1298);
+  ctx.fillStyle = '#9c91a4';
+  ctx.font = '19px sans-serif';
+  ctx.fillText('五张照片，一场校园漫游 · 示意地图估算距离', 540, 1350);
+  return canvas.toDataURL('image/png');
+}

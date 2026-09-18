@@ -1,0 +1,52 @@
+[
+  {
+    "id": "north-building",
+    "file": "01.webp",
+    "name": "北大楼",
+    "source": "https://www.nju.edu.cn/info/4041/422051.htm",
+    "original": "https://www.nju.edu.cn/__local/3/6B/6F/3BDCA53901171329F66E62E38D1_20873DAB_9BE3E.jpeg",
+    "credit": "南京大学「南大风华」",
+    "rights": "原站未注明开放许可；版权归原作者/南京大学所有。仅作本地开发样例，公开发布前请替换为自摄或获得授权的照片。",
+    "changes": "缩放并转换为 WebP；页面可能裁切显示。"
+  },
+  {
+    "id": "great-hall",
+    "file": "02.webp",
+    "name": "大礼堂",
+    "source": "https://www.nju.edu.cn/info/4041/422081.htm",
+    "original": "https://www.nju.edu.cn/__local/9/EF/89/256F6AF40D5F2D8855D365D5EA1_31BDE869_89A2C.jpeg",
+    "credit": "南京大学「南大风华」",
+    "rights": "原站未注明开放许可；版权归原作者/南京大学所有。仅作本地开发样例，公开发布前请替换为自摄或获得授权的照片。",
+    "changes": "缩放并转换为 WebP；页面可能裁切显示。"
+  },
+  {
+    "id": "east-building",
+    "file": "03.webp",
+    "name": "东大楼",
+    "source": "https://www.nju.edu.cn/info/4041/422061.htm",
+    "original": "https://www.nju.edu.cn/__local/D/06/08/7C590E2DB73E4A57F31EBD6EEAE_51EAE63C_C0545.jpeg",
+    "credit": "南京大学「南大风华」",
+    "rights": "原站未注明开放许可；版权归原作者/南京大学所有。仅作本地开发样例，公开发布前请替换为自摄或获得授权的照片。",
+    "changes": "缩放并转换为 WebP；页面可能裁切显示。"
+  },
+  {
+    "id": "memorial",
+    "file": "04.webp",
+    "name": "革命烈士纪念碑",
+    "source": "https://www.nju.edu.cn/info/4041/422111.htm",
+    "original": "https://www.nju.edu.cn/__local/4/10/BC/04606A0622067C3963FBCFFCB71_DE573D9A_A41D8.jpeg",
+    "credit": "南京大学「南大风华」",
+    "rights": "原站未注明开放许可；版权归原作者/南京大学所有。仅作本地开发样例，公开发布前请替换为自摄或获得授权的照片。",
+    "changes": "缩放并转换为 WebP；页面可能裁切显示。"
+  },
+  {
+    "id": "west-building",
+    "file": "05.webp",
+    "name": "西大楼",
+    "source": "https://www.nju.edu.cn/info/4041/422071.htm",
+    "original": "https://www.nju.edu.cn/__local/E/50/0E/360CE8316BAFE187E340233FE3D_0D1F9A45_D3537.jpeg",
+    "credit": "南京大学「南大风华」",
+    "rights": "原站未注明开放许可；版权归原作者/南京大学所有。仅作本地开发样例，公开发布前请替换为自摄或获得授权的照片。",
+    "changes": "缩放并转换为 WebP；页面可能裁切显示。"
+  }
+]
