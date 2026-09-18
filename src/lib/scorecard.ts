@@ -3,6 +3,7 @@ import { rankFor } from './game';
 export async function createScorecard(
   results: RoundResult[],
   questions: Question[],
+  campusName: string,
 ): Promise<string> {
   await document.fonts.ready;
   const canvas = document.createElement('canvas');
@@ -22,12 +23,12 @@ export async function createScorecard(
   ctx.fillStyle = '#8e8796';
   ctx.fillText('NANXUN · NJU GUESSR', 80, 162);
   ctx.textAlign = 'right';
-  ctx.fillText('鼓楼漫游 / 成绩卡', 1000, 116);
+  ctx.fillText(`${campusName}漫游 / 成绩卡`, 1000, 116);
   const total = results.reduce((sum, r) => sum + r.score, 0);
   ctx.textAlign = 'center';
   ctx.fillStyle = '#47344f';
   ctx.font = 'bold 52px sans-serif';
-  ctx.fillText(rankFor(total).title, 540, 292);
+  ctx.fillText(rankFor(total, campusName).title, 540, 292);
   ctx.font = 'bold 130px sans-serif';
   ctx.fillStyle = '#673c83';
   ctx.fillText(total.toLocaleString('en-US'), 540, 466);
@@ -36,7 +37,7 @@ export async function createScorecard(
   ctx.fillText('/ 25,000 分', 540, 524);
   ctx.font = '28px sans-serif';
   ctx.fillStyle = '#6c6572';
-  ctx.fillText(rankFor(total).description, 540, 604);
+  ctx.fillText(rankFor(total, campusName).description, 540, 604);
   results.forEach((r, i) => {
     const y = 711 + i * 98;
     const q = questions.find((item) => item.id === r.questionId)!;

@@ -141,6 +141,72 @@ button:active:not(:disabled) {
   padding: 9px 13px;
   background: #fcfaff;
 }
+.campus-switcher {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 24px;
+  margin-bottom: 28px;
+}
+.campus-switcher-label {
+  color: #8b8096;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+.campus-options {
+  display: flex;
+  gap: 10px;
+}
+.campus-options button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 15px;
+  background: #fff;
+  border: 1px solid #e6e0ea;
+  border-radius: 12px;
+  color: #918299;
+  font-size: 12px;
+  transition:
+    background 150ms,
+    border-color 150ms;
+}
+.campus-options button strong {
+  font-weight: 600;
+  font-size: 13px;
+  color: #706479;
+}
+.campus-options button:hover {
+  border-color: #b497c5;
+}
+.campus-options button[aria-pressed='true'] {
+  background: #f0e8f5;
+  border-color: #bfa3cf;
+  color: var(--purple);
+}
+.campus-options button[aria-pressed='true'] strong {
+  color: var(--purple);
+}
+@media (max-width: 760px) {
+  .campus-switcher {
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .campus-options {
+    width: 100%;
+    gap: 8px;
+  }
+  .campus-options button {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 8px;
+  }
+  .campus-options button > span {
+    display: none;
+  }
+}
 .edition {
   border-left: 1px solid #e3dbe8;
   padding-left: 9px;

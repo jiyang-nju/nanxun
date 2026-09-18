@@ -19,28 +19,33 @@ import {
 } from 'lucide-react';
 import CampusMap from './components/CampusMap';
 import Modal from './components/Modal';
-import { questions } from './data/questions';
+import { campuses } from './data/campuses';
+import { assetUrl } from './lib/assets';
 import credits from './data/credits.json';
 import {
   distanceBetween,
   rankFor,
   readBest,
+  readCampus,
+  saveCampus,
   ROUND_COUNT,
   saveBest,
   scoreDistance,
   shuffleQuestions,
 } from './lib/game';
-import type { Point, Question, RoundResult } from './lib/game';
+import type { Campus, CampusId, Point, Question, RoundResult } from './lib/game';
 import { createScorecard } from './lib/scorecard';
 
-type Dialog = 'rules' | 'credits' | 'photo' | 'restart' | 'scorecard' | null;
+type Dialog = 'rules' | 'credits' | 'photo' | 'restart' | 'scorecard' | 'switch' | null;
 const number = (n: number) => n.toLocaleString('en-US');
 function Photo({
+  campus,
   question,
   round,
   revealed,
   onZoom,
 }: {
+  campus: Campus;
   question: Question;
   round: number;
   revealed: boolean;
@@ -54,8 +59,8 @@ function Photo({
       {!failed && (
         <img
           className="question-photo"
-          src={`${question.image}${retry ? `?retry=${retry}` : ''}`}
-          alt={revealed ? question.name : `第 ${round + 1} 轮待猜的鼓楼校园风景`}
+          src={`${assetUrl(question.image)}${retry ? `?retry=${retry}` : ''}`}
+          alt={revealed ? question.name : `第 ${round + 1} 轮待猜的${campus.shortName}校园风景`}
           onLoad={() => setLoaded(true)}
           onError={() => setFailed(true)}
         />
@@ -77,7 +82,7 @@ function Photo({
       )}
       <div className="photo-top">
         <span className="photo-badge">
-          <span /> GULOU CAMPUS
+          <span /> {campus.englishName}
         </span>
         <button
           className="photo-expand"
@@ -100,7 +105,24 @@ function Photo({
   );
 }
 export default function App() {
-  const [deck, setDeck] = useState<Question[]>(questions);
+  const [campusId, setCampusId] = useState<CampusId>(readCampus);
+  const campus = campuses.find((item) => item.id === campusId)!;
+  function changeCampus(id: CampusId) {
+    saveCampus(id);
+    setCampusId(id);
+  }
+  return <CampusGame key={campus.id} campus={campus} onCampusChange={changeCampus} />;
+}
+function CampusGame({
+  campus,
+  onCampusChange,
+}: {
+  campus: Campus;
+  onCampusChange: (id: CampusId) => void;
+}) {
+  const questions = campus.questions;
+  const [deck, setDeck] = useState<Question[]>(() => questions.slice(0, ROUND_COUNT));
+  const [pendingCampus, setPendingCampus] = useState<Campus | null>(null);
   const [round, setRound] = useState(0);
   const [guess, setGuess] = useState<Point | null>(null);
   const [results, setResults] = useState<RoundResult[]>([]);
@@ -108,23 +130,23 @@ export default function App() {
   const [hintUsed, setHintUsed] = useState(false);
   const [finished, setFinished] = useState(false);
   const [dialog, setDialog] = useState<Dialog>(null);
-  const [best, setBest] = useState(readBest);
+  const [best, setBest] = useState(() => readBest(campus.id));
   const [scorecard, setScorecard] = useState('');
   const [downloadState, setDownloadState] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
   const heading = useRef<HTMLHeadingElement>(null);
   const question = deck[round];
   const result = results[round];
   const total = results.reduce((sum, r) => sum + r.score, 0);
-  const rank = rankFor(total);
+  const rank = rankFor(total, campus.shortName);
   useEffect(() => {
     if (!finished) {
       const image = new Image();
-      image.src = deck[(round + 1) % deck.length].image;
+      image.src = assetUrl(deck[(round + 1) % deck.length].image);
     }
   }, [round, deck, finished]);
   function submit() {
     if (!guess || result || finished) return;
-    const distance = distanceBetween(guess, question.position);
+    const distance = distanceBetween(guess, question.position, campus.map.metersPerUnit);
     setResults((prev) =>
       prev.length === round
         ? [
@@ -142,7 +164,7 @@ export default function App() {
   }
   function next() {
     if (round === ROUND_COUNT - 1) {
-      saveBest(total);
+      saveBest(campus.id, total);
       setBest(Math.max(best, total));
       setFinished(true);
     } else {
@@ -154,7 +176,7 @@ export default function App() {
     requestAnimationFrame(() => heading.current?.focus());
   }
   function restart() {
-    setDeck(shuffleQuestions(questions));
+    setDeck(shuffleQuestions(questions).slice(0, ROUND_COUNT));
     setRound(0);
     setGuess(null);
     setResults([]);
@@ -163,12 +185,22 @@ export default function App() {
     setFinished(false);
     setDialog(null);
     setDownloadState('idle');
+    setScorecard('');
     requestAnimationFrame(() => heading.current?.focus());
+  }
+  function selectCampus(nextCampus: Campus) {
+    if (nextCampus.id === campus.id) return;
+    if (!finished && (guess || results.length || hintUsed)) {
+      setPendingCampus(nextCampus);
+      setDialog('switch');
+    } else {
+      onCampusChange(nextCampus.id);
+    }
   }
   async function download() {
     setDownloadState('loading');
     try {
-      const image = await createScorecard(results, questions);
+      const image = await createScorecard(results, questions, campus.shortName);
       setScorecard(image);
       setDialog('scorecard');
       setDownloadState('done');
@@ -192,7 +224,7 @@ export default function App() {
           </div>
           <div className="campus-pill">
             <MapPin size={15} />
-            <span>南京大学 · 鼓楼校区</span>
+            <span>南京大学 · {campus.name}</span>
             <span className="edition">初遇篇</span>
           </div>
           <button className="text-button rule-button" onClick={() => setDialog('rules')}>
@@ -202,6 +234,25 @@ export default function App() {
         </div>
       </header>
       <main className="main-content">
+        <nav className="campus-switcher" aria-label="选择校区">
+          <span className="campus-switcher-label">今天，想去哪里？</span>
+          <div className="campus-options">
+            {campuses.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                aria-pressed={item.id === campus.id}
+                aria-label={`切换到${item.name}`}
+                onClick={() => selectCampus(item)}
+              >
+                <MapPin size={16} />
+                <strong>{item.name}</strong>
+                <span>{item.description}</span>
+                {item.id === campus.id && <Check size={15} />}
+              </button>
+            ))}
+          </div>
+        </nav>
         {!finished ? (
           <>
             <section className="game-heading">
@@ -232,7 +283,7 @@ export default function App() {
                 <span className="tiny-compass">
                   <Compass size={18} />
                 </span>
-                <strong>鼓楼漫游</strong>
+                <strong>{campus.shortName}漫游</strong>
                 <span className="round-separator" />
                 <span>第 {round + 1} / 5 站</span>
               </div>
@@ -253,6 +304,7 @@ export default function App() {
             <section className="game-grid">
               <div className="photo-column">
                 <Photo
+                  campus={campus}
                   key={question.id}
                   question={question}
                   round={round}
@@ -311,6 +363,7 @@ export default function App() {
                     </div>
                   </div>
                   <CampusMap
+                    campus={campus}
                     key={question.id}
                     guess={guess}
                     answer={result ? question.position : undefined}
@@ -369,7 +422,7 @@ export default function App() {
         ) : (
           <section className="results-page">
             <div className="results-intro">
-              <div className="eyebrow">GULOU CAMPUS · 漫游完成</div>
+              <div className="eyebrow">{campus.englishName} · 漫游完成</div>
               <div className="award-icon">
                 <Award size={46} strokeWidth={1.3} />
               </div>
@@ -389,7 +442,7 @@ export default function App() {
               </span>
               <span>
                 <Trophy size={16} />
-                本机最高 {number(best)}
+                {campus.shortName}最高 {number(best)}
               </span>
               <span>
                 <Lightbulb size={16} />
@@ -406,7 +459,7 @@ export default function App() {
                 return (
                   <div className="journey-row" key={r.questionId}>
                     <span className="journey-number">0{i + 1}</span>
-                    <img src={q.image} alt="" />
+                    <img src={assetUrl(q.image)} alt="" />
                     <div className="journey-place">
                       <h3>{q.name}</h3>
                       <span>
@@ -470,7 +523,7 @@ export default function App() {
               <span>01</span>
               <section>
                 <h3>看风景</h3>
-                <p>每局 5 张鼓楼校区照片。留意建筑和周围环境，也可以放大照片或查看提示。</p>
+                <p>每局 5 张{campus.name}照片。留意建筑和周围环境，也可以放大照片或查看提示。</p>
               </section>
             </div>
             <div>
@@ -494,7 +547,8 @@ export default function App() {
               </section>
             </div>
             <p className="rules-footnote">
-              这是鼓楼北园的入门练习题库。地图为校园平面示意，位置经过人工标注，距离仅作游戏估算；答案对应建筑位置，不是摄影师的拍摄点。最高分只保存在当前浏览器。
+              当前是{campus.area}
+              的入门练习题库。地图为校园平面示意，位置经过人工标注，距离仅作游戏估算；答案对应建筑位置，不是摄影师的拍摄点。各校区最高分分别保存在当前浏览器；刷新会重开当前校区的一局。
             </p>
             <button className="button primary" onClick={() => setDialog(null)}>
               知道了，开始寻找
@@ -510,24 +564,21 @@ export default function App() {
               当前使用南京大学「南大风华」的公开校园照片作本地开发样例，版权归原作者及相关权利人所有。原站未注明开放许可；公开发布前请换成自摄或已获授权的素材。
             </p>
             <div className="credit-list">
-              {credits.map((c) => (
-                <a key={c.id} href={c.source} target="_blank" rel="noreferrer">
-                  <span>{c.name}</span>
-                  <span>
-                    南京大学
-                    <ArrowUpRight size={15} />
-                  </span>
-                </a>
-              ))}
+              {credits
+                .filter((c) => c.campus === campus.id)
+                .map((c) => (
+                  <a key={c.id} href={c.source} target="_blank" rel="noreferrer">
+                    <span>{c.name}</span>
+                    <span>
+                      南京大学
+                      <ArrowUpRight size={15} />
+                    </span>
+                  </a>
+                ))}
             </div>
             <p>照片经过缩放、WebP 格式转换，页面中可能裁切显示。</p>
-            <a
-              className="map-source"
-              href="https://zcc.nju.edu.cn/DFS/file/2024/09/20/20240920103404667kkasuw.pdf"
-              target="_blank"
-              rel="noreferrer"
-            >
-              地图位置参考：南京大学鼓楼校区平面图（2024）
+            <a className="map-source" href={campus.map.source.url} target="_blank" rel="noreferrer">
+              地图位置参考：{campus.map.source.title}
               <ArrowUpRight size={16} />
             </a>
             <p>本项目为学生校园小游戏，与南京大学官方无隶属关系。</p>
@@ -542,7 +593,7 @@ export default function App() {
         >
           <img
             className="full-photo"
-            src={question.image}
+            src={assetUrl(question.image)}
             alt={result ? question.name : '本轮校园风景放大图'}
           />
           <p className="photo-modal-note">
@@ -553,16 +604,37 @@ export default function App() {
       )}
       {dialog === 'scorecard' && (
         <Modal title="收好这段校园记忆" onClose={() => setDialog(null)}>
-          <img className="scorecard-preview" src={scorecard} alt="南寻鼓楼漫游成绩卡" />
+          <img
+            className="scorecard-preview"
+            src={scorecard}
+            alt={`南寻${campus.shortName}漫游成绩卡`}
+          />
           <a
             className="button primary download-link"
             href={scorecard}
-            download={`南寻-鼓楼漫游-${total}分.png`}
+            download={`南寻-${campus.shortName}漫游-${total}分.png`}
           >
             <Download size={18} />
             下载 PNG 成绩卡
           </a>
           <p className="save-note">也可以长按或右键图片，保存这段校园记忆。</p>
+        </Modal>
+      )}
+      {dialog === 'switch' && pendingCampus && (
+        <Modal title={`去${pendingCampus.shortName}走走？`} onClose={() => setDialog(null)}>
+          <p className="restart-copy">
+            切换后会结束这局{campus.shortName}漫游，从{pendingCampus.name}的第 1
+            站重新出发。已经完成的最高分会保留。
+          </p>
+          <div className="confirm-actions">
+            <button className="button secondary" onClick={() => setDialog(null)}>
+              继续这一局
+            </button>
+            <button className="button primary" onClick={() => onCampusChange(pendingCampus.id)}>
+              前往{pendingCampus.name}
+              <ArrowRight size={18} />
+            </button>
+          </div>
         </Modal>
       )}
       {dialog === 'restart' && (

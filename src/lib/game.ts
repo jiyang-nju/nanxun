@@ -2,6 +2,26 @@ export interface Point {
   x: number;
   y: number;
 }
+export type CampusId = 'gulou' | 'xianlin';
+export interface MapBounds extends Point {
+  width: number;
+  height: number;
+}
+export interface Campus {
+  id: CampusId;
+  name: string;
+  shortName: string;
+  englishName: string;
+  area: string;
+  description: string;
+  questions: Question[];
+  map: {
+    bounds: MapBounds;
+    center: Point;
+    metersPerUnit: number;
+    source: { title: string; url: string };
+  };
+}
 export interface Question {
   id: string;
   name: string;
@@ -20,12 +40,9 @@ export interface RoundResult {
 }
 export const ROUND_COUNT = 5;
 export const MAX_SCORE = 5000;
-// Map-space units are an estimate based on the university's 2024 campus plan.
-// This is NOT a georeferenced GPS map. Targets are landmark centers, not camera positions.
-export const METERS_PER_UNIT = 0.8;
-export const MAP_BOUNDS = { x: 435, y: 300, width: 635, height: 770 };
-export function distanceBetween(a: Point, b: Point): number {
-  return Math.hypot(a.x - b.x, a.y - b.y) * METERS_PER_UNIT;
+// Each campus uses its own schematic scale, not georeferenced GPS coordinates.
+export function distanceBetween(a: Point, b: Point, metersPerUnit: number): number {
+  return Math.hypot(a.x - b.x, a.y - b.y) * metersPerUnit;
 }
 export function scoreDistance(distance: number): number {
   if (!Number.isFinite(distance) || distance < 0) return 0;
@@ -41,30 +58,52 @@ export function shuffleQuestions<T>(items: readonly T[], random = Math.random): 
   }
   return result;
 }
-export function clampPoint(p: Point): Point {
+export function clampPoint(p: Point, bounds: MapBounds): Point {
   return {
-    x: Math.max(MAP_BOUNDS.x, Math.min(MAP_BOUNDS.x + MAP_BOUNDS.width, p.x)),
-    y: Math.max(MAP_BOUNDS.y, Math.min(MAP_BOUNDS.y + MAP_BOUNDS.height, p.y)),
+    x: Math.max(bounds.x, Math.min(bounds.x + bounds.width, p.x)),
+    y: Math.max(bounds.y, Math.min(bounds.y + bounds.height, p.y)),
   };
 }
-export function rankFor(score: number): { title: string; description: string } {
-  if (score >= 22500) return { title: '鼓楼活地图', description: '一砖一瓦，都是你的主场。' };
+export function rankFor(score: number, campusName: string): { title: string; description: string } {
+  if (score >= 22500)
+    return { title: `${campusName}活地图`, description: '一砖一瓦，都是你的主场。' };
   if (score >= 17500) return { title: '校园寻路人', description: '熟悉的风景，都藏在你的记忆里。' };
   if (score >= 10000) return { title: '梧桐漫游者', description: '再走一走，故事就会慢慢清晰。' };
   return { title: '初来寻南', description: '每一次迷路，都是认识南大的开始。' };
 }
-export function readBest(): number {
+function validBest(value: string | null): number {
+  const n = Number(value);
+  return Number.isFinite(n) && n >= 0 && n <= ROUND_COUNT * MAX_SCORE ? n : 0;
+}
+export function readBest(campusId: CampusId): number {
   try {
-    const n = Number(localStorage.getItem('nanxun-best-v1'));
-    return Number.isFinite(n) && n >= 0 && n <= 25000 ? n : 0;
+    const current = validBest(localStorage.getItem(`nanxun-best-v2-${campusId}`));
+    // The original game only had Gulou. Preserve that record without leaking it to Xianlin.
+    const legacy = campusId === 'gulou' ? validBest(localStorage.getItem('nanxun-best-v1')) : 0;
+    return Math.max(current, legacy);
   } catch {
     return 0;
   }
 }
-export function saveBest(score: number): void {
+export function saveBest(campusId: CampusId, score: number): void {
+  if (!Number.isFinite(score) || score < 0 || score > ROUND_COUNT * MAX_SCORE) return;
   try {
-    localStorage.setItem('nanxun-best-v1', String(Math.max(readBest(), score)));
+    localStorage.setItem(`nanxun-best-v2-${campusId}`, String(Math.max(readBest(campusId), score)));
   } catch {
     /* Storage is optional; gameplay still works. */
+  }
+}
+export function readCampus(): CampusId {
+  try {
+    return localStorage.getItem('nanxun-campus-v1') === 'xianlin' ? 'xianlin' : 'gulou';
+  } catch {
+    return 'gulou';
+  }
+}
+export function saveCampus(id: CampusId): void {
+  try {
+    localStorage.setItem('nanxun-campus-v1', id);
+  } catch {
+    /* Storage is optional. */
   }
 }

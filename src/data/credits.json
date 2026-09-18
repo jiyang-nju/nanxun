@@ -7,7 +7,8 @@
     "original": "https://www.nju.edu.cn/__local/3/6B/6F/3BDCA53901171329F66E62E38D1_20873DAB_9BE3E.jpeg",
     "credit": "南京大学「南大风华」",
     "rights": "原站未注明开放许可；版权归原作者/南京大学所有。仅作本地开发样例，公开发布前请替换为自摄或获得授权的照片。",
-    "changes": "缩放并转换为 WebP；页面可能裁切显示。"
+    "changes": "缩放并转换为 WebP；页面可能裁切显示。",
+    "campus": "gulou"
   },
   {
     "id": "great-hall",
@@ -17,7 +18,8 @@
     "original": "https://www.nju.edu.cn/__local/9/EF/89/256F6AF40D5F2D8855D365D5EA1_31BDE869_89A2C.jpeg",
     "credit": "南京大学「南大风华」",
     "rights": "原站未注明开放许可；版权归原作者/南京大学所有。仅作本地开发样例，公开发布前请替换为自摄或获得授权的照片。",
-    "changes": "缩放并转换为 WebP；页面可能裁切显示。"
+    "changes": "缩放并转换为 WebP；页面可能裁切显示。",
+    "campus": "gulou"
   },
   {
     "id": "east-building",
@@ -27,7 +29,8 @@
     "original": "https://www.nju.edu.cn/__local/D/06/08/7C590E2DB73E4A57F31EBD6EEAE_51EAE63C_C0545.jpeg",
     "credit": "南京大学「南大风华」",
     "rights": "原站未注明开放许可；版权归原作者/南京大学所有。仅作本地开发样例，公开发布前请替换为自摄或获得授权的照片。",
-    "changes": "缩放并转换为 WebP；页面可能裁切显示。"
+    "changes": "缩放并转换为 WebP；页面可能裁切显示。",
+    "campus": "gulou"
   },
   {
     "id": "memorial",
@@ -37,7 +40,8 @@
     "original": "https://www.nju.edu.cn/__local/4/10/BC/04606A0622067C3963FBCFFCB71_DE573D9A_A41D8.jpeg",
     "credit": "南京大学「南大风华」",
     "rights": "原站未注明开放许可；版权归原作者/南京大学所有。仅作本地开发样例，公开发布前请替换为自摄或获得授权的照片。",
-    "changes": "缩放并转换为 WebP；页面可能裁切显示。"
+    "changes": "缩放并转换为 WebP；页面可能裁切显示。",
+    "campus": "gulou"
   },
   {
     "id": "west-building",
@@ -45,6 +49,62 @@
     "name": "西大楼",
     "source": "https://www.nju.edu.cn/info/4041/422071.htm",
     "original": "https://www.nju.edu.cn/__local/E/50/0E/360CE8316BAFE187E340233FE3D_0D1F9A45_D3537.jpeg",
+    "credit": "南京大学「南大风华」",
+    "rights": "原站未注明开放许可；版权归原作者/南京大学所有。仅作本地开发样例，公开发布前请替换为自摄或获得授权的照片。",
+    "changes": "缩放并转换为 WebP；页面可能裁切显示。",
+    "campus": "gulou"
+  },
+  {
+    "id": "xianlin-library",
+    "campus": "xianlin",
+    "file": "xianlin/01.webp",
+    "name": "杜厦图书馆",
+    "source": "https://www.nju.edu.cn/info/4031/421661.htm",
+    "original": "https://www.nju.edu.cn/__local/F/C9/5D/E25B3F0C6098A3D9E87A4917846_B2FF3662_67B7E.png",
+    "credit": "南京大学「南大风华」",
+    "rights": "原站未注明开放许可；版权归原作者/南京大学所有。仅作本地开发样例，公开发布前请替换为自摄或获得授权的照片。",
+    "changes": "缩放并转换为 WebP；页面可能裁切显示。"
+  },
+  {
+    "id": "xianlin-admin-south",
+    "campus": "xianlin",
+    "file": "xianlin/02.webp",
+    "name": "行政南楼",
+    "source": "https://www.nju.edu.cn/info/4031/421721.htm",
+    "original": "https://www.nju.edu.cn/__local/C/6B/6E/BF3D22BA67182B86DAF404EBBF0_D0EDF49F_1903B5.jpeg",
+    "credit": "南京大学「南大风华」",
+    "rights": "原站未注明开放许可；版权归原作者/南京大学所有。仅作本地开发样例，公开发布前请替换为自摄或获得授权的照片。",
+    "changes": "缩放并转换为 WebP；页面可能裁切显示。"
+  },
+  {
+    "id": "xianlin-gym",
+    "campus": "xianlin",
+    "file": "xianlin/03.webp",
+    "name": "方肇周体育馆",
+    "source": "https://www.nju.edu.cn/info/4031/421711.htm",
+    "original": "https://www.nju.edu.cn/__local/F/ED/9D/3BF13F768D67334564FC239EBB0_9145C721_DF9D.jpeg",
+    "credit": "南京大学「南大风华」",
+    "rights": "原站未注明开放许可；版权归原作者/南京大学所有。仅作本地开发样例，公开发布前请替换为自摄或获得授权的照片。",
+    "changes": "缩放并转换为 WebP；页面可能裁切显示。"
+  },
+  {
+    "id": "xianlin-student-center",
+    "campus": "xianlin",
+    "file": "xianlin/04.webp",
+    "name": "敬文学生活动中心",
+    "source": "https://www.nju.edu.cn/info/4031/421701.htm",
+    "original": "https://www.nju.edu.cn/__local/9/AC/B7/622C36BEB3B5F693F376AC73DEE_546E07EF_141E54.jpeg",
+    "credit": "南京大学「南大风华」",
+    "rights": "原站未注明开放许可；版权归原作者/南京大学所有。仅作本地开发样例，公开发布前请替换为自摄或获得授权的照片。",
+    "changes": "缩放并转换为 WebP；页面可能裁切显示。"
+  },
+  {
+    "id": "xianlin-eryuan",
+    "campus": "xianlin",
+    "file": "xianlin/05.webp",
+    "name": "二源广场",
+    "source": "https://www.nju.edu.cn/info/4031/421651.htm",
+    "original": "https://www.nju.edu.cn/__local/B/13/B1/2EC09A31D59BF81C353A41F7B1D_C91303B2_1267E1.jpeg",
     "credit": "南京大学「南大风华」",
     "rights": "原站未注明开放许可；版权归原作者/南京大学所有。仅作本地开发样例，公开发布前请替换为自摄或获得授权的照片。",
     "changes": "缩放并转换为 WebP；页面可能裁切显示。"

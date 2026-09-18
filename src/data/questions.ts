@@ -1,6 +1,6 @@
-import type { Question } from '../lib/game';
-const photo = (n: string) => `${import.meta.env.BASE_URL}photos/${n}.webp`;
-export const questions: Question[] = [
+import type { Question } from '../lib/game.ts';
+const photo = (n: string) => `photos/${n}.webp`;
+export const gulouQuestions: Question[] = [
   {
     id: 'north-building',
     name: '北大楼',
@@ -46,5 +46,52 @@ export const questions: Question[] = [
     hint: '它在北大楼前草坪的西边，再往西就是运动场。',
     story: '沿着草坪向西走，熟悉的楼影会在树叶间出现。你认出的是建筑，还是某次路过的午后？',
     source: 'https://www.nju.edu.cn/info/4041/422071.htm',
+  },
+];
+export const xianlinQuestions: Question[] = [
+  {
+    id: 'xianlin-library',
+    name: '杜厦图书馆',
+    image: photo('xianlin/01'),
+    position: { x: 462, y: 160 },
+    hint: '沿南大门的中轴线向北看，越过南雍大道，水边那座展开的建筑就是线索。',
+    story: '临水的楼影、落地窗前的座位，是仙林日常里安静的一页。下一次路过，记得抬头看看天色。',
+    source: 'https://www.nju.edu.cn/info/4031/421661.htm',
+  },
+  {
+    id: 'xianlin-admin-south',
+    name: '行政南楼',
+    image: photo('xianlin/02'),
+    position: { x: 680, y: 337 },
+    hint: '塔楼在校区东南侧，家化路与东大路之间，两江路以北。旁边还有一座行政办公楼。',
+    story: '方正的塔楼和草坪上的字母，给现代校园留下一点老南大的影子。你的相册里也有这个角度吗？',
+    source: 'https://www.nju.edu.cn/info/4031/421721.htm',
+  },
+  {
+    id: 'xianlin-gym',
+    name: '方肇周体育馆',
+    image: photo('xianlin/03'),
+    position: { x: 182, y: 278 },
+    hint: '醒目的红色外墙，在南雍大道西南侧、第一运动场的西北边。',
+    story: '红色的建筑收下了比赛的呐喊，也记得无数次训练结束后的傍晚。运动场边，是校园另一种心跳。',
+    source: 'https://www.nju.edu.cn/info/4031/421711.htm',
+  },
+  {
+    id: 'xianlin-student-center',
+    name: '敬文学生活动中心',
+    image: photo('xianlin/04'),
+    position: { x: 305, y: 178 },
+    hint: '它在图书馆西侧，紧邻 520 广场，梦川从它的南边绕过。',
+    story: '折叠的屋顶下，排练、社团活动和舞台上的灯光轮番登场。在这里，总能遇到正在发生的青春。',
+    source: 'https://www.nju.edu.cn/info/4031/421701.htm',
+  },
+  {
+    id: 'xianlin-eryuan',
+    name: '二源广场',
+    image: photo('xianlin/05'),
+    position: { x: 487, y: 280 },
+    hint: '这一题猜广场本身：在图书馆正南方、南雍大道以南的中轴线上，金大路和中大路之间。',
+    story: '站在广场上面向图书馆，两侧道路向南延伸。“二源”让校园里的这段路，也连起了学校的来处。',
+    source: 'https://www.nju.edu.cn/info/4031/421651.htm',
   },
 ];
